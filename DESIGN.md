@@ -66,3 +66,14 @@ Approach:
 - Generate minimal set of transactions
 
 Note: current implementation does not sort balances, but works for basic cases.
+
+
+## Rounding Handling
+
+Handled floating point issues in expense splitting.
+
+Approach:
+- Round each share to 2 decimal places
+- Assign remaining amount to last user
+
+Reason: Ensures total split always matches original expense amount without precision errors.

@@ -14,14 +14,14 @@ function addExpense(req, res){
             return res.status(500).json({ error: err.message })
         }
 
-        if(users.length == 0){
+        if(users.length === 0){
             return res.status(400).json({ error: 'no users in group' })
         }
 
-        const splitAmount = amount / users.length
-
-        const insertExpense = `insert into expenses (group_id, payer_id, amount, description)
-        values (?, ?, ?, ?)`
+        const insertExpense = `
+            insert into expenses (group_id, payer_id, amount, description)
+            values (?, ?, ?, ?)
+        `
 
         db.run(insertExpense, [group_id, payer_id, amount, description], function(err){
             if(err){
@@ -30,13 +30,24 @@ function addExpense(req, res){
 
             const expense_id = this.lastID
 
-            for(let u of users){
+            let splitAmount = Math.floor((amount / users.length) * 100) / 100
+            let totalAssigned = 0
+
+            for(let i = 0; i < users.length; i++){
+                let share = splitAmount
+
+                if(i === users.length - 1){
+                    share = parseFloat((amount - totalAssigned).toFixed(2))
+                }
+
+                totalAssigned += share
+
                 const insertSplit = `
                     insert into expense_splits (expense_id, user_id, amount_owed)
-                    values(?, ?, ?)
+                    values (?, ?, ?)
                 `
 
-                db.run(insertSplit, [expense_id, u.id, splitAmount])
+                db.run(insertSplit, [expense_id, users[i].id, share])
             }
 
             res.status(201).json({
