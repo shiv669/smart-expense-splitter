@@ -33,3 +33,14 @@ Added support for group memebers.
 - No global user system (kept simple for scope)
 
 Reason: Users only exist within a group context, so no need for separate authentication or global identity.
+
+## Expense Module (equal split)
+
+Implemented expense creation with equal split.
+
+Flow:
+- fetch all users in group
+- Divide total amount equally
+- Store each user's share in expense_splits
+
+Note: splits are stored explicitly instead of recalculating later to avoid inconsistencies.

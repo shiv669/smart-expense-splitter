@@ -15,6 +15,9 @@ app.use('/api/groups', groupRoutes)
 const userRoutes = require('./routes/userRoutes')
 app.use('/api/users', userRoutes)
 
+const expenseRoutes = require('./routes/expenseRoutes')
+app.use('/api/expenses', expenseRoutes)
+
 const port = 5000
 
 app.listen(port, () => {
