@@ -18,6 +18,9 @@ app.use('/api/users', userRoutes)
 const expenseRoutes = require('./routes/expenseRoutes')
 app.use('/api/expenses', expenseRoutes)
 
+const balanceRoutes = require('./routes/balanceRoutes')
+app.use('/api/balances', balanceRoutes)
+
 const port = 5000
 
 app.listen(port, () => {

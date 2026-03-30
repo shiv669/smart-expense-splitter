@@ -44,3 +44,14 @@ Flow:
 - Store each user's share in expense_splits
 
 Note: splits are stored explicitly instead of recalculating later to avoid inconsistencies.
+
+## Balance Calculation 
+
+Implemented balance computaion using derived values
+
+Approach:
+- Initialize all users with zero balance
+- Add total expenses paid by each user
+- Substract individual shares from expense_splits
+
+Reason: Balances are not stored to avoid inconsistencies and recalcualted on demand.
