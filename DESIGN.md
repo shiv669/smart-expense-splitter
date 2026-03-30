@@ -14,3 +14,13 @@ This strcture is chosen to keep things simple but still organized:
 This separation helps avoid mixing logic everywhere while still keeping the code easy to understand and debug. 
 
 I am intentionally not overengineering with services, repositoris, etc. because that would slow down development. 
+
+## Backend Initialization
+
+server and database setup completed.
+
+- Express server created
+- SQLite connected
+- Tables created at startup
+
+Decision: Tables are initialized automatically when server starts to avoid manual DB setup.
