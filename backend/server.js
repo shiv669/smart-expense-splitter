@@ -12,6 +12,9 @@ createTables()
 const groupRoutes = require('./routes/groupRoutes')
 app.use('/api/groups', groupRoutes)
 
+const userRoutes = require('./routes/userRoutes')
+app.use('/api/users', userRoutes)
+
 const port = 5000
 
 app.listen(port, () => {

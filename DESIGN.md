@@ -24,3 +24,12 @@ server and database setup completed.
 - Tables created at startup
 
 Decision: Tables are initialized automatically when server starts to avoid manual DB setup.
+
+## Users Module
+
+Added support for group memebers.
+
+- Users are tied to a group using group_id
+- No global user system (kept simple for scope)
+
+Reason: Users only exist within a group context, so no need for separate authentication or global identity.
