@@ -55,3 +55,14 @@ Approach:
 - Substract individual shares from expense_splits
 
 Reason: Balances are not stored to avoid inconsistencies and recalcualted on demand.
+
+## Settlement logic
+
+Implemented greedy settlement algorithm.
+
+Approach:
+- Separate creditors and debitors
+- Iteratively match smallest outstanding amounts
+- Generate minimal set of transactions
+
+Note: current implementation does not sort balances, but works for basic cases.
