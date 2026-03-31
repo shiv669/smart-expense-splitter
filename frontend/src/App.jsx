@@ -13,6 +13,9 @@ function App() {
     const [amount, setAmount] = useState('')
     const [description, setDescription] = useState('')
     const [payerId, setPayerId] = useState('')
+    const [balances, setBalances] = useState({})
+
+    const [category, setCategory] = useState('')
 
     async function fetchGroups() {
         try {
@@ -92,6 +95,7 @@ function App() {
     async function selectGroup(group) {
         setSelectedGroup(group)
         await fetchUsers(group.id)
+        await fetchBalances(group.id)
     }
 
     useEffect(() => {
@@ -114,15 +118,52 @@ function App() {
                     group_id: selectedGroup.id,
                     payer_id: payerId,
                     amount: parseFloat(amount),
-                    description: description
+                    description: description,
+                    category: category
                 })
             })
+            await fetchBalances(selectedGroup.id)
 
             setAmount('')
             setDescription('')
+            setCategory('')
         }
         catch (err) {
             console.log(err)
+        }
+    }
+
+    async function fetchBalances(groupId) {
+        try {
+            const res = await fetch(`http://localhost:5000/api/balances/${groupId}`)
+            const data = await res.json()
+
+            setBalances(data)
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }
+
+    async function fetchCategory(desc) {
+        if (!desc) {
+            setCategory('')
+            return
+        }
+        try {
+            const res = await fetch('http://localhost:5000/api/ai/categorize', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ description: desc })
+            })
+
+            const data = await res.json()
+            setCategory(data.category)
+        }
+        catch (err) {
+            setCategory('Other')
         }
     }
 
@@ -193,9 +234,17 @@ function App() {
                     <input
                         type="text"
                         value={description}
-                        onChange={(e) => setDescription(e.target.value)}
+                        onChange={(e) => {
+                            const val = e.target.value
+                            setDescription(val)
+                            fetchCategory(val)
+                        }}
                         placeholder="description"
                     />
+
+                    <div>
+                        Category: {category}
+                    </div>
 
                     <select
                         value={payerId}
@@ -212,6 +261,14 @@ function App() {
                     <button onClick={addExpense}>
                         add expense
                     </button>
+
+                    <h3>Balances</h3>
+
+                    {Object.keys(balances).map((id) => (
+                        <div key={id}>
+                            User {id}: {balances[id]}
+                        </div>
+                    ))}
                 </div>
             )}
         </>
