@@ -128,3 +128,16 @@ Flow:
 
 Decision:
 Keep interaction simple with single-page state instead of routing to reduce complexity.
+
+
+## Expense Input (Frontend)
+
+Added ability to create expenses from UI.
+
+Flow:
+- User inputs amount, description, and selects payer
+- Sends POST request to backend
+- Backend handles splitting logic
+
+Decision:
+Custom split skipped to prioritize core functionality under time constraint.

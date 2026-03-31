@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-function App(){
+function App() {
 
     const [groupName, setGroupName] = useState('')
     const [groups, setGroups] = useState([])
@@ -10,25 +10,29 @@ function App(){
     const [userName, setUserName] = useState('')
     const [users, setUsers] = useState([])
 
-    async function fetchGroups(){
-        try{
+    const [amount, setAmount] = useState('')
+    const [description, setDescription] = useState('')
+    const [payerId, setPayerId] = useState('')
+
+    async function fetchGroups() {
+        try {
             const res = await fetch('http://localhost:5000/api/groups')
             const data = await res.json()
 
             setGroups(data)
         }
-        catch(err){
+        catch (err) {
             console.log(err)
         }
     }
 
-    async function createGroup(){
-        if(!groupName){
+    async function createGroup() {
+        if (!groupName) {
             alert('enter group name')
             return
         }
 
-        try{
+        try {
             const res = await fetch('http://localhost:5000/api/groups', {
                 method: 'POST',
                 headers: {
@@ -42,30 +46,30 @@ function App(){
             setGroupName('')
             await fetchGroups()
         }
-        catch(err){
+        catch (err) {
             console.log(err)
         }
     }
 
-    async function fetchUsers(groupId){
-        try{
+    async function fetchUsers(groupId) {
+        try {
             const res = await fetch(`http://localhost:5000/api/users/${groupId}`)
             const data = await res.json()
 
             setUsers(data)
         }
-        catch(err){
+        catch (err) {
             console.log(err)
         }
     }
 
-    async function addUser(){
-        if(!userName || !selectedGroup){
+    async function addUser() {
+        if (!userName || !selectedGroup) {
             alert('enter user name or select group')
             return
         }
 
-        try{
+        try {
             await fetch('http://localhost:5000/api/users', {
                 method: 'POST',
                 headers: {
@@ -80,12 +84,12 @@ function App(){
             setUserName('')
             await fetchUsers(selectedGroup.id)
         }
-        catch(err){
+        catch (err) {
             console.log(err)
         }
     }
 
-    async function selectGroup(group){
+    async function selectGroup(group) {
         setSelectedGroup(group)
         await fetchUsers(group.id)
     }
@@ -94,12 +98,40 @@ function App(){
         fetchGroups()
     }, [])
 
+    async function addExpense() {
+        if (!amount || !selectedGroup || !payerId) {
+            alert('fill all fields')
+            return
+        }
+
+        try {
+            await fetch('http://localhost:5000/api/expenses', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    group_id: selectedGroup.id,
+                    payer_id: payerId,
+                    amount: parseFloat(amount),
+                    description: description
+                })
+            })
+
+            setAmount('')
+            setDescription('')
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }
+
     return (
         <>
             <div>
                 <h1>Smart Expense Splitter</h1>
 
-                <input 
+                <input
                     type="text"
                     value={groupName}
                     onChange={(e) => setGroupName(e.target.value)}
@@ -113,7 +145,7 @@ function App(){
                 <h2>Groups</h2>
 
                 {groups.map((g) => (
-                    <div 
+                    <div
                         key={g.id}
                         onClick={() => selectGroup(g)}
                         style={{
@@ -130,7 +162,7 @@ function App(){
                 <div>
                     <h2>Selected Group: {selectedGroup.name}</h2>
 
-                    <input 
+                    <input
                         type="text"
                         value={userName}
                         onChange={(e) => setUserName(e.target.value)}
@@ -148,6 +180,38 @@ function App(){
                             {u.name}
                         </div>
                     ))}
+
+                    <h3>Add Expense</h3>
+
+                    <input
+                        type="number"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        placeholder="amount"
+                    />
+
+                    <input
+                        type="text"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="description"
+                    />
+
+                    <select
+                        value={payerId}
+                        onChange={(e) => setPayerId(e.target.value)}
+                    >
+                        <option value="">select payer</option>
+                        {users.map((u) => (
+                            <option key={u.id} value={u.id}>
+                                {u.name}
+                            </option>
+                        ))}
+                    </select>
+
+                    <button onClick={addExpense}>
+                        add expense
+                    </button>
                 </div>
             )}
         </>
