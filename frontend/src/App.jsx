@@ -50,7 +50,7 @@ function App(){
             const data = await res.json()
             setCategory(data.category)
         }
-        catch{
+        catch(err){
             setCategory('Other')
         }
     }
@@ -70,8 +70,8 @@ function App(){
 
     async function selectGroup(group){
         setSelectedGroup(group)
-        await fetchUsers(group.id)
-        await fetchBalances(group.id)
+        fetchUsers(group.id)
+        fetchBalances(group.id)
     }
 
     async function addUser(){
@@ -118,76 +118,110 @@ function App(){
     }, [])
 
     return (
-        <div style={{
-            maxWidth: '600px',
-            margin: '0 auto',
-            padding: '30px',
-            fontFamily: 'Arial'
-        }}>
+        <div style={{ maxWidth: '600px', margin: '0 auto', padding: '40px 20px', fontFamily: 'Inter, system-ui, sans-serif' }}>
 
-            <h1>Smart Expense Splitter</h1>
+            <h1 style={{ fontSize: '32px', fontWeight: '800' }}>Smart Expense Splitter</h1>
+            <p style={{ color: '#666' }}>Group expenses made simple</p>
 
-            <div style={{ marginBottom: '20px' }}>
-                <input
-                    value={groupName}
-                    onChange={(e) => setGroupName(e.target.value)}
-                    placeholder="new group"
-                    style={{ padding: '8px', width: '60%' }}
-                />
-                <button onClick={createGroup} style={{ padding: '8px', marginLeft: '10px' }}>
-                    add
-                </button>
-            </div>
+            <div style={{ marginTop: '30px', borderBottom: '1px solid #eee', paddingBottom: '20px' }}>
 
-            <div style={{ marginBottom: '20px' }}>
-                {groups.map(g => (
-                    <div
-                        key={g.id}
-                        onClick={() => selectGroup(g)}
+                <h3>Select or Create Group</h3>
+
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '15px' }}>
+                    <input
+                        value={groupName}
+                        onChange={(e) => setGroupName(e.target.value)}
+                        placeholder="group name"
+                        style={{ flex: 1, padding: '10px', border: '1px solid #ccc' }}
+                    />
+
+                    <button
+                        onClick={createGroup}
+                        disabled={!groupName}
                         style={{
-                            padding: '8px',
-                            cursor: 'pointer',
-                            borderBottom: '1px solid #eee',
-                            background: selectedGroup?.id === g.id ? '#f0f0f0' : 'white'
+                            padding: '10px',
+                            background: groupName ? '#000' : '#ccc',
+                            color: '#fff',
+                            border: 'none'
                         }}
                     >
-                        {g.name}
-                    </div>
-                ))}
+                        create
+                    </button>
+                </div>
+
+                {groups.length === 0 && <div style={{ color: '#888' }}>no groups yet</div>}
+
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {groups.map(g => (
+                        <div
+                            key={g.id}
+                            onClick={() => selectGroup(g)}
+                            style={{
+                                padding: '6px 12px',
+                                border: '1px solid #ddd',
+                                cursor: 'pointer',
+                                background: selectedGroup?.id === g.id ? '#000' : '#fff',
+                                color: selectedGroup?.id === g.id ? '#fff' : '#000'
+                            }}
+                        >
+                            {g.name}
+                        </div>
+                    ))}
+                </div>
+
             </div>
 
             {selectedGroup && (
                 <div>
 
-                    <h2>{selectedGroup.name}</h2>
+                    <div style={{ marginTop: '30px', borderBottom: '1px solid #eee', paddingBottom: '20px' }}>
 
-                    <div style={{ marginBottom: '20px' }}>
-                        <input
-                            value={userName}
-                            onChange={(e) => setUserName(e.target.value)}
-                            placeholder="add member"
-                            style={{ padding: '8px', width: '60%' }}
-                        />
-                        <button onClick={addUser} style={{ padding: '8px', marginLeft: '10px' }}>
-                            add
-                        </button>
+                        <h3>Add Members</h3>
+
+                        <div style={{ display: 'flex', gap: '8px', marginBottom: '10px' }}>
+                            <input
+                                value={userName}
+                                onChange={(e) => setUserName(e.target.value)}
+                                placeholder="member name"
+                                style={{ flex: 1, padding: '10px', border: '1px solid #ccc' }}
+                            />
+
+                            <button
+                                onClick={addUser}
+                                disabled={!userName}
+                                style={{
+                                    padding: '10px',
+                                    background: userName ? '#000' : '#ccc',
+                                    color: '#fff',
+                                    border: 'none'
+                                }}
+                            >
+                                add
+                            </button>
+                        </div>
+
+                        {users.length === 0 && <div style={{ color: '#888' }}>no members yet</div>}
+
+                        <div>
+                            {users.map(u => (
+                                <span key={u.id} style={{ marginRight: '10px' }}>
+                                    {u.name}
+                                </span>
+                            ))}
+                        </div>
+
                     </div>
 
-                    <div style={{ marginBottom: '20px' }}>
-                        {users.map(u => (
-                            <span key={u.id} style={{ marginRight: '10px' }}>
-                                {u.name}
-                            </span>
-                        ))}
-                    </div>
+                    <div style={{ marginTop: '30px', borderBottom: '1px solid #eee', paddingBottom: '20px' }}>
 
-                    <div style={{ marginBottom: '20px' }}>
+                        <h3>Add Expense</h3>
+
                         <input
                             type="number"
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
                             placeholder="amount"
-                            style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
+                            style={{ width: '100%', padding: '10px', border: '1px solid #ccc', marginBottom: '10px' }}
                         />
 
                         <input
@@ -197,7 +231,7 @@ function App(){
                                 fetchCategory(e.target.value)
                             }}
                             placeholder="description"
-                            style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
+                            style={{ width: '100%', padding: '10px', border: '1px solid #ccc', marginBottom: '10px' }}
                         />
 
                         <div style={{ marginBottom: '10px' }}>
@@ -207,7 +241,7 @@ function App(){
                         <select
                             value={payerId}
                             onChange={(e) => setPayerId(e.target.value)}
-                            style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
+                            style={{ width: '100%', padding: '10px', border: '1px solid #ccc', marginBottom: '10px' }}
                         >
                             <option value="">select payer</option>
                             {users.map(u => (
@@ -217,33 +251,47 @@ function App(){
                             ))}
                         </select>
 
-                        <button onClick={addExpense} style={{ padding: '10px', width: '100%' }}>
+                        <button
+                            onClick={addExpense}
+                            disabled={!amount || !payerId}
+                            style={{
+                                width: '100%',
+                                padding: '10px',
+                                background: amount && payerId ? '#000' : '#ccc',
+                                color: '#fff',
+                                border: 'none'
+                            }}
+                        >
                             add expense
                         </button>
+
                     </div>
 
-                    <h3>Balances</h3>
+                    <div style={{ marginTop: '30px' }}>
 
-                    {Object.keys(balances).map(id => {
-                        const user = users.find(u => u.id == id)
-                        const val = parseFloat(balances[id])
+                        <h3>Balances</h3>
 
-                        return (
-                            <div key={id} style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                borderBottom: '1px solid #eee',
-                                padding: '8px 0'
-                            }}>
-                                <span>{user ? user.name : 'user'}</span>
-                                <span style={{ color: val >= 0 ? 'green' : 'red' }}>
-                                    {val >= 0 ? '+' : ''}{val.toFixed(2)}
-                                </span>
-                            </div>
-                        )
-                    })}
+                        {Object.keys(balances).length === 0 && <div style={{ color: '#888' }}>no expenses yet</div>}
+
+                        {Object.keys(balances).map(id => {
+                            const user = users.find(u => u.id == id)
+                            const val = parseFloat(balances[id])
+
+                            return (
+                                <div key={id} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                                    <span>{user ? user.name : 'user'}</span>
+                                    <span style={{ color: val >= 0 ? 'green' : 'red' }}>
+                                        {val >= 0 ? '+' : ''}{val.toFixed(2)}
+                                    </span>
+                                </div>
+                            )
+                        })}
+
+                    </div>
+
                 </div>
             )}
+
         </div>
     )
 }
