@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+const BASE_URL = 'https://smart-expense-splitter-9wgx.onrender.com'
+
 function App(){
 
     const [groupName, setGroupName] = useState('')
@@ -17,19 +19,19 @@ function App(){
     const [category, setCategory] = useState('')
 
     async function fetchGroups(){
-        const res = await fetch('http://localhost:5000/api/groups')
+        const res = await fetch(`${BASE_URL}/api/groups`)
         const data = await res.json()
         setGroups(data)
     }
 
     async function fetchUsers(groupId){
-        const res = await fetch(`http://localhost:5000/api/users/${groupId}`)
+        const res = await fetch(`${BASE_URL}/api/users/${groupId}`)
         const data = await res.json()
         setUsers(data)
     }
 
     async function fetchBalances(groupId){
-        const res = await fetch(`http://localhost:5000/api/balances/${groupId}`)
+        const res = await fetch(`${BASE_URL}/api/balances/${groupId}`)
         const data = await res.json()
         setBalances(data)
     }
@@ -41,7 +43,7 @@ function App(){
         }
 
         try{
-            const res = await fetch('http://localhost:5000/api/ai/categorize', {
+            const res = await fetch(`${BASE_URL}/api/ai/categorize`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ description: desc })
@@ -58,7 +60,7 @@ function App(){
     async function createGroup(){
         if(!groupName) return
 
-        await fetch('http://localhost:5000/api/groups', {
+        await fetch(`${BASE_URL}/api/groups`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name: groupName })
@@ -77,7 +79,7 @@ function App(){
     async function addUser(){
         if(!userName || !selectedGroup) return
 
-        await fetch('http://localhost:5000/api/users', {
+        await fetch(`${BASE_URL}/api/users`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -93,7 +95,7 @@ function App(){
     async function addExpense(){
         if(!amount || !payerId || !selectedGroup) return
 
-        await fetch('http://localhost:5000/api/expenses', {
+        await fetch(`${BASE_URL}/api/expenses`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
