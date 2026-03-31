@@ -77,3 +77,28 @@ Approach:
 - Assign remaining amount to last user
 
 Reason: Ensures total split always matches original expense amount without precision errors.
+
+
+## Frontend Initialization
+
+Initialized react app with vite.
+
+Reason:
+- Faster development server
+- Minimal setup
+- Better suited for short time constrsints
+
+Cleaned default boilerplate to keep codebase simple and focused
+
+
+## Frontend-Backend Integration (Groups)
+
+Connected frontend to backend for group creation.
+
+Flow:
+- User enters group name
+- Frontend sends POST request to API
+- Response handled and logged
+
+Decision:
+Start with minimal UI and validate API integration before building more components.
