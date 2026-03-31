@@ -114,3 +114,17 @@ FLOW:
 - render dynamically
 
 Also re-fetched after creating a group to keep UI  in sync.
+
+
+## Group Interaction and Users
+
+Added ability to select a group and manage users.
+
+Flow:
+- User selects a group
+- Fetch users for that group
+- Add new users via API
+- UI updates after each addition
+
+Decision:
+Keep interaction simple with single-page state instead of routing to reduce complexity.
