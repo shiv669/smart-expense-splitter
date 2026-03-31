@@ -1,77 +1,110 @@
 # Smart Expense Splitter
 
-## Overview 
+## Overview
 A lightweight web application to manage and split shared expenses among groups.
 
-This project focuses on building a correct and usable system under strict time constraints, prioritizing clarity in balance calculation, simplicity in design, and handling real-world edge cases.
-
----
+Built under a strict 24-hour constraint with focus on:
+- correct balance computation
+- clean system design
+- real-time usability
+- reliability under edge cases
 
 ## Status
-**In progress (24-hour assessment for NeevAI Internship Program)**
-
----
+Completed (NeevAI Internship Assessment Submission)
 
 ## Tech Stack
+- Frontend: React (Vite)
+- Backend: Node.js (Express)
+- Database: SQLite
+- AI: Groq (llama-3.3-70b-versatile)
 
-- Frontend: React  
-- Backend: Node.js (Express)  
-- Database: SQLite  
+## Why this stack?
+- SQLite for zero setup and fast iteration
+- Express for minimal and predictable API layer
+- React for simple state-driven UI
+- Groq for fast and free AI inference
 
-### Why this stack?
+## Trade-offs
+- No production-grade DB (PostgreSQL)
+- No authentication
+- UI kept minimal to prioritize correctness
 
-- SQLite was chosen for simplicity and zero setup overhead, enabling faster development within a 24-hour constraint.
-- Node.js provides a minimal API layer for clean separation of concerns.
-- React enables fast UI development with clear state management.
+## Features
+- Create groups and add members
+- Add expenses with automatic equal splitting
+- Real-time balance calculation
+- View who owes whom
+- AI-powered expense categorization
+- Fallback handling for AI failures
 
-### Trade-offs
+## AI Feature
+Expense categorization is powered using Groq API.
 
-- Not using a full production-grade database (e.g., PostgreSQL) to prioritize speed.
-- Minimal backend features to focus on correctness of core logic rather than infrastructure.
+Examples:
+- "dinner" → Food
+- "uber ride" → Travel
+- "buying sneakers" → Shopping
 
----
-
-## Features 
-
-- Create groups and add members  
-- Add expenses (equal and custom split)  
-- Real-time balance calculation  
-- Summary of who owes whom  
-
----
+## Reliability
+- If AI works → category from model
+- If API fails → fallback logic
 
 ## Balance Calculation Strategy
-
 Each user maintains a net balance:
-
-- Positive → should receive money  
-- Negative → owes money  
+- Positive → should receive money
+- Negative → owes money
 
 For each expense:
-- The payer's balance increases by the total amount paid  
-- Each participant’s balance decreases based on their share  
+- Payer balance increases
+- Participants balances decrease
 
-Final settlements are derived by matching debtors (negative balances) with creditors (positive balances), minimizing the number of transactions.
+## Rounding Handling
+- Values rounded to 2 decimals
+- Last user absorbs difference
 
----
+## System Flow
+1. Create group
+2. Add members
+3. Add expense
+4. Auto split
+5. Balances update
+6. AI categorizes
 
 ## Edge Cases
-
-- Uneven splits and rounding errors  
-- Empty groups or no participants  
-- Self-pay scenarios  
-- Duplicate or invalid inputs  
-
----
+- Floating precision
+- Empty groups
+- Invalid inputs
+- AI failure fallback
 
 ## Out of Scope
+- Authentication
+- Advanced UI
+- Docker
 
-- No authentication system (not required for scope)  
-- No heavy database setup (to avoid unnecessary complexity)  
-- No Docker setup (focus was on product delivery over infrastructure)  
+## Setup Instructions
 
----
+Backend:
+cd backend  
+npm install  
+create .env file  
+GROQ_API_KEY=your_api_key  
+npx nodemon server.js  
 
-## Design Philosophy
+Frontend:
+cd frontend  
+npm install  
+npm run dev  
 
-This project intentionally avoids unnecessary complexity and focuses on delivering a complete, correct, and user-friendly solution within the given constraints.
+## Deployment
+Frontend → Vercel  
+Backend → Render  
+
+## Demo
+Shows:
+- group creation
+- expense flow
+- balance updates
+- AI categorization
+
+## Final Notes
+Focus was on correctness, reliability, and complete system flow rather than UI polish.
