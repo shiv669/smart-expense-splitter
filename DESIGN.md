@@ -141,3 +141,15 @@ Flow:
 
 Decision:
 Custom split skipped to prioritize core functionality under time constraint.
+
+
+## Balance Display(frontend)
+
+Added balance visualization
+
+Flow:
+- Fetch balances when group is selected
+- update balances after adding expense
+
+Decision:
+Display raw balances first for correctness before optimizing UI
