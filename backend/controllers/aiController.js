@@ -1,27 +1,31 @@
-const fetch = require('node-fetch');
+const fetch = require('node-fetch')
 
-function fallbackCategory(desc) {
-    const d = desc.toLowerCase();
+function fallbackCategory(desc){
+    const d = desc.toLowerCase()
 
-    if (d.includes('food') || d.includes('dinner') || d.includes('lunch')) return 'Food';
-    if (d.includes('uber') || d.includes('travel') || d.includes('bus')) return 'Travel';
-    if (d.includes('rent') || d.includes('house')) return 'Housing';
+    if(d.includes('food') || d.includes('dinner') || d.includes('lunch')) return 'Food'
+    if(d.includes('uber') || d.includes('travel') || d.includes('bus')) return 'Travel'
+    if(d.includes('rent') || d.includes('house')) return 'Housing'
 
-    return 'Other';
+    return 'Other'
 }
 
-async function categorizeExpense(req, res) {
-    const { description } = req.body;
+async function categorizeExpense(req, res){
+    const { description } = req.body
 
-    if (!description) {
-        return res.status(400).json({ error: 'description required' });
+    if(!description){
+        return res.status(400).json({ error: 'description required' })
     }
 
-    if (!process.env.GROQ_API_KEY) {
-        return res.json({ category: fallbackCategory(description) });
+    console.log("AI CALLED:", description)
+
+    if(!process.env.GROQ_API_KEY){
+        const cat = fallbackCategory(description)
+        console.log("FALLBACK USED:", cat)
+        return res.json({ category: cat })
     }
 
-    try {
+    try{
         const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
             headers: {
@@ -29,7 +33,7 @@ async function categorizeExpense(req, res) {
                 'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
             },
             body: JSON.stringify({
-                model: 'llama3-8b-8192',
+                model: 'llama-3.3-70b-versatile',
                 messages: [
                     {
                         role: 'system',
@@ -41,21 +45,31 @@ async function categorizeExpense(req, res) {
                     }
                 ]
             })
-        });
+        })
 
-        if (!response.ok) {
-            return res.json({ category: fallbackCategory(description) });
+        if(!response.ok){
+            const cat = fallbackCategory(description)
+            console.log("API FAILED → FALLBACK:", cat)
+            return res.json({ category: cat })
         }
 
-        const data = await response.json();
-        const category = data.choices?.[0]?.message?.content?.trim() || fallbackCategory(description);
+        const data = await response.json()
 
-        res.json({ category });
+        const category = data.choices?.[0]?.message?.content?.trim() || fallbackCategory(description)
+
+        console.log("AI RESPONSE:", category)
+
+        res.json({ category })
     }
-    catch (err) {
-        console.error("AI Categorization Error:", err);
-        res.json({ category: fallbackCategory(description) });
+    catch(err){
+        console.log("ERROR → FALLBACK")
+
+        const cat = fallbackCategory(description)
+
+        console.log("FALLBACK:", cat)
+
+        res.json({ category: cat })
     }
 }
 
-module.exports = { categorizeExpense };
+module.exports = { categorizeExpense }

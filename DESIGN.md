@@ -153,3 +153,33 @@ Flow:
 
 Decision:
 Display raw balances first for correctness before optimizing UI
+
+
+## Balance Display
+
+Added balance visualization in frontend.
+
+Approach:
+- Fetch balances when group is selected
+- Re-fetch after adding expense
+- Display user-wise net balance
+
+Observation:
+Raw float values caused precision issues, fixed by rounding to 2 decimals.
+
+
+## AI Categorization (Final)
+
+Integrated Groq API using llama-3.3-70b-versatile model.
+
+Flow:
+- User enters description
+- Backend sends request to Groq
+- Model returns category
+- UI updates in real time
+
+Fallback:
+If API fails, system falls back to rule-based categorization.
+
+Reason:
+Ensures system reliability while still leveraging real AI inference.
