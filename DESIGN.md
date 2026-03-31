@@ -102,3 +102,15 @@ Flow:
 
 Decision:
 Start with minimal UI and validate API integration before building more components.
+
+
+## Display Groups in Ui
+
+Implemented group listing in frontend
+
+FLOW:
+- fetch groups on component mount
+- store in state
+- render dynamically
+
+Also re-fetched after creating a group to keep UI  in sync.

@@ -22,4 +22,16 @@ function createGroup(req, res){
     })
 }
 
-module.exports = { createGroup }
+function getGroups(req, res){
+    const query = `SELECT * FROM groups`
+
+    db.all(query, [], (err, rows) => {
+        if(err){
+            return res.status(500).json({ error: err.message })
+        }
+
+        res.json(rows)
+    })
+}
+
+module.exports = { createGroup, getGroups }

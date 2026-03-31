@@ -1,8 +1,22 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 function App(){
 
     const [groupName, setGroupName] = useState('')
+    const [groups, setGroups] = useState([])
+
+    async function fetchGroups() {
+      try{
+        const res = await fetch('http://localhost:5000/api/groups')
+        const data = await res.json()
+
+        setGroups(data)
+      }
+      catch(err){
+        console.log(err)
+      }
+      
+    }
 
     async function createGroup(){
         if(!groupName){
@@ -29,6 +43,10 @@ function App(){
         }
     }
 
+    useEffect(() => {
+      fetchGroups()
+    }, [])
+
     return (
         <div>
             <h1>Smart Expense Splitter</h1>
@@ -43,6 +61,14 @@ function App(){
             <button onClick={createGroup}>
                 create group
             </button>
+
+            <h2>Groups</h2>
+
+            {groups.map((g) => (
+              <div key={g.id}>
+                {g.name}
+              </div>
+            ))}
         </div>
     )
 }
